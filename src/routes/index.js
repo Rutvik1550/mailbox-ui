@@ -1,34 +1,32 @@
-import { Suspense, lazy } from "react";
-import { Navigate, useLocation, useRoutes } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
+
 import { MainLayout } from "../layout/MainLayout";
-
-const Loadable = (Component) => (props) => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { pathname } = useLocation();
-
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Component {...props} />
-    </Suspense>
-  );
-};
+import { lazy } from "react";
 
 export default function Router() {
   return useRoutes([
-    { element: <Navigate to="mailbox" replace />, index: true },
     {
       path: "mailbox",
       element: <MainLayout />,
       children: [
-        { path: "", element: <MailBox /> },
+        {
+          path: "",
+          element: <MailBox />,
+        },
+        {
+          path: "compose",
+          element: <Compose />,
+        },
         {
           path: "read-mail",
           element: <ReadMail />,
         },
       ],
     },
+    { element: <Navigate to="/mailbox" replace />, index: true },
   ]);
 }
 
-const MailBox = Loadable(lazy(() => import("../pages/MailBox")));
-const ReadMail = Loadable(lazy(() => import("../pages/ReadMail")));
+const MailBox = lazy(() => import("../pages/MailBox"));
+const Compose = lazy(() => import("../pages/Compose"));
+const ReadMail = lazy(() => import("../pages/ReadMail"));
