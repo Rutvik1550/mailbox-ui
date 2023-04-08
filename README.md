@@ -1,2 +1,2 @@
 # mailbox-ui
-freelance mailbox ui integration
+Mailbox ui integration
