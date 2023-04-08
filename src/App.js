@@ -1,8 +1,13 @@
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import MailBox from "./pages/MailBox";
+import Router from "./routes";
 
 function App() {
-  return <MailBox />;
+  return (
+    <BrowserRouter>
+      <Router />
+    </BrowserRouter>
+  );
 }
 
 export default App;
