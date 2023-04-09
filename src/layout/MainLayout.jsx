@@ -1,12 +1,20 @@
-import React from 'react';
-import SideBar from '../components/mailbox/Sidebar';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import Header from "../components/mailbox/Header";
+import { Outlet } from "react-router-dom";
+import Sidebar from "../components/mailbox/Sidebar";
 
 export const MainLayout = () => {
   return (
-    <div>
-        <SideBar />
-        <Outlet />
+    <div className="content-wrapper">
+      <Header />
+      <section className="content">
+        <div className="container-fluid">
+          <div className="row">
+            <Sidebar />
+            <Outlet />
+          </div>
+        </div>
+      </section>
     </div>
-  )
-}
+  );
+};
