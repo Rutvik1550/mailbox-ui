@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
 
 const Routes = {
   "/mailbox": {
     link: "/mailbox/compose",
-    title: "Compose"
+    title: "Compose",
   },
   "/mailbox/read-mail": {
     link: "/mailbox",
-    title: "Back to Inbox"
+    title: "Back to Inbox",
   },
   "/mailbox/compose": {
     link: "/mailbox",
-    title: "Back to Inbox"
-  }
-}
+    title: "Back to Inbox",
+  },
+};
 
 const Sidebar = () => {
   const location = useLocation();
-  const [ isCollapse, setIsCollapse ] = useState(false)
+  const [isCollapse, setIsCollapse] = useState(false);
 
   const handleCollapse = () => {
-    setIsCollapse(!isCollapse)
-  }
+    setIsCollapse(!isCollapse);
+  };
 
   return (
     <div className="col-md-3">
