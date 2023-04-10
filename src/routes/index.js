@@ -1,29 +1,36 @@
 import { Navigate, useRoutes } from "react-router-dom";
 
 import { MainLayout } from "../layout/MainLayout";
+import PrivateRoute from "../components/PrivateRoute";
 import { Routes } from "../utils/const";
 import { lazy } from "react";
 
 export default function Router() {
   return useRoutes([
     {
-      path: Routes.home,
-      element: <MainLayout />,
+      element: <PrivateRoute />,
       children: [
         {
-          path: Routes.mailbox,
-          element: <MailBox />,
-        },
-        {
-          path: Routes.compose,
-          element: <Compose />,
-        },
-        {
-          path: Routes.readMail,
-          element: <ReadMail />,
+          path: Routes.home,
+          element: <MainLayout />,
+          children: [
+            {
+              path: Routes.mailbox,
+              element: <MailBox />,
+            },
+            {
+              path: Routes.compose,
+              element: <Compose />,
+            },
+            {
+              path: Routes.readMail,
+              element: <ReadMail />,
+            },
+          ],
         },
       ],
     },
+    { path: Routes.error, element: <>Error</> },
     { element: <Navigate to={Routes.home} replace />, index: true },
   ]);
 }

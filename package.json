@@ -9,6 +9,7 @@
     "icheck-bootstrap": "^3.0.1",
     "jquery": "^3.6.4",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
@@ -38,6 +39,8 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
     "@types/summernote": "^0.8.7",
     "shx": "^0.3.4"
   }
