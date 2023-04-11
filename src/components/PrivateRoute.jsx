@@ -5,7 +5,7 @@ import { Routes } from "../utils/const";
 import { useAuthContext } from "../context/auth";
 import withAuthToken from "../hoc/withAuthToken";
 
-const PrivateRoute = ({ token }) => {
+const PrivateRoute = () => {
   const authContext = useAuthContext();
 
   return authContext.token ? <Outlet /> : <Navigate to={Routes.error} replace={true} />;

@@ -55,249 +55,31 @@ const MailBox = ({ mails, selectedFolder }) => {
           <div className="table-responsive mailbox-messages">
             <table className="table table-hover table-striped">
               <tbody>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check1" />
-                      <label htmlFor="check1"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment"></td>
-                  <td className="mailbox-date">5 mins ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check2" />
-                      <label htmlFor="check2"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">28 mins ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check3" />
-                      <label htmlFor="check3"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">11 hours ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check4" />
-                      <label htmlFor="check4"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment"></td>
-                  <td className="mailbox-date">15 hours ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check5" />
-                      <label htmlFor="check5"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">Yesterday</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check6" />
-                      <label htmlFor="check6"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">2 days ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check7" />
-                      <label htmlFor="check7"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">2 days ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check8" />
-                      <label htmlFor="check8"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment"></td>
-                  <td className="mailbox-date">2 days ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check9" />
-                      <label htmlFor="check9"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment"></td>
-                  <td className="mailbox-date">2 days ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check10" />
-                      <label htmlFor="check10"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment"></td>
-                  <td className="mailbox-date">2 days ago</td>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="icheck-primary">
-                      <input type="checkbox" value="" id="check11" />
-                      <label htmlFor="check11"></label>
-                    </div>
-                  </td>
-                  <td className="mailbox-star">
-                    <a href="#">
-                      <i className="fas fa-star-o text-warning"></i>
-                    </a>
-                  </td>
-                  <td className="mailbox-name">
-                    <a href="read-mail.html">Alexander Pierce</a>
-                  </td>
-                  <td className="mailbox-subject">
-                    <b>AdminLTE 3.0 Issue</b> - Trying to find a solution to this problem...
-                  </td>
-                  <td className="mailbox-attachment">
-                    <i className="fas fa-paperclip"></i>
-                  </td>
-                  <td className="mailbox-date">4 days ago</td>
-                </tr>
+                {mails?.map((mail) => {
+                  return (
+                    <tr>
+                      <td>
+                        <div className="icheck-primary">
+                          <input type="checkbox" value="" id="check1" />
+                          <label htmlFor="check1"></label>
+                        </div>
+                      </td>
+                      <td className="mailbox-star">
+                        <a href="#">
+                          <i className="fas fa-star text-warning"></i>
+                        </a>
+                      </td>
+                      <td className="mailbox-name">
+                        <a href="read-mail.html">{mail.FROMMAIL.split(" <")[0]}</a>
+                      </td>
+                      <td className="mailbox-subject">
+                        {mail.SUBJECT}
+                      </td>
+                      <td className="mailbox-attachment"></td>
+                      <td className="mailbox-date">{mail.RecieveDate}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
