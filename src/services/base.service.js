@@ -3,9 +3,21 @@ const isError = (error) => {
 };
 
 export default class BaseService {
+  #token;
+
+  constructor(token) {
+    this.#token = token;
+  }
+
   async _callApi(method, route, urlParams, requestData, skipReadingResponseBody) {
     try {
       let headers = {};
+
+      if (this.#token) {
+        headers = {
+          Authorization: `Bearer ${this.#token}`,
+        };
+      }
 
       let body;
       const url = `${process.env.REACT_APP_API_BASE_URL}${route}${urlParams ? "?" + urlParams.toString() : ""}`;

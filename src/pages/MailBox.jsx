@@ -1,11 +1,12 @@
 import React from "react";
+import withMails from "../hoc/withMails";
 
-const MailBox = () => {
+const MailBox = ({ mails, selectedFolder }) => {
   return (
     <div className="col-md-9">
       <div className="card card-primary card-outline">
         <div className="card-header">
-          <h3 className="card-title">Inbox</h3>
+          <h3 className="card-title">{selectedFolder}</h3>
 
           <div className="card-tools">
             <div className="input-group input-group-sm">
@@ -340,4 +341,4 @@ const MailBox = () => {
   );
 };
 
-export default MailBox;
+export default withMails(MailBox);

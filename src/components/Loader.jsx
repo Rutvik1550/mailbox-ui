@@ -1,7 +1,9 @@
-import Spinner from "react-bootstrap/Spinner";
-
 const Loader = () => {
-  return <Spinner animation="border" role="status" />;
+  return (
+    <div class="d-flex justify-content-center align-items-center loader-container">
+      <div class="spinner-border" role="status"></div>
+    </div>
+  );
 };
 
 export default Loader;
