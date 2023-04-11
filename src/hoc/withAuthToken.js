@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 
 import Loader from "../components/Loader";
 import { localStorageKeys } from "../utils/const";
+import { useAuthContext } from "../context/auth";
 import { useAuthService } from "../services/auth.service";
 import withLoader from "./withLoader";
 
 const withAuthToken = (WrappedComponent) => {
   return function WithAuthTokenComponent() {
+    const authContext = useAuthContext();
     const authService = useAuthService();
-    const [token, setToken] = useState("");
     const [loading, setLoading] = useState(false);
 
     const WrappedComponentWithLoading = withLoader(WrappedComponent, Loader);
@@ -16,7 +17,7 @@ const withAuthToken = (WrappedComponent) => {
     useEffect(() => {
       const token = getToken();
       if (token) {
-        setToken(token);
+        authContext.setToken(token);
       } else {
         fetchToken();
       }
@@ -26,7 +27,7 @@ const withAuthToken = (WrappedComponent) => {
       try {
         setLoading(true);
         const res = await authService.getToken();
-        setToken(res.access_token);
+        authContext.setToken(res.access_token);
         const item = {
           token: res.access_token,
           expiry: new Date().getTime() + res.expires_in * 1000,
@@ -55,7 +56,7 @@ const withAuthToken = (WrappedComponent) => {
       return item.token;
     };
 
-    return <WrappedComponentWithLoading loading={loading || !token} token={token} />;
+    return <WrappedComponentWithLoading loading={loading || !authContext.token} />;
   };
 };
 

@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import React, { useState } from "react";
 
+import withMailFolderList from "../../hoc/withMailFolderList";
+
 const Routes = {
   "/mailbox": {
     link: "/mailbox/compose",
@@ -16,7 +18,7 @@ const Routes = {
   },
 };
 
-const Sidebar = () => {
+const Sidebar = ({ mailFolderList }) => {
   const location = useLocation();
   const [isCollapse, setIsCollapse] = useState(false);
 
@@ -104,4 +106,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default withMailFolderList(Sidebar);
