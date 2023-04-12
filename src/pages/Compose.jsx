@@ -11,7 +11,7 @@ const Compose = () => {
   };
 
   return (
-    <div className="col-md-9">
+    <>
       <div className="card card-primary card-outline">
         <div className="card-header">
           <h3 className="card-title">Compose New Message</h3>
@@ -66,7 +66,7 @@ const Compose = () => {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

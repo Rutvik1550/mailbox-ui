@@ -10,7 +10,7 @@ const initialState = {
 export const MailContext = createContext(initialState);
 
 export function MailWrapper({ children }) {
-  const [selectedFolder, setSelectedFolder] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState("Inbox");
 
   let value = {
     selectedFolder,

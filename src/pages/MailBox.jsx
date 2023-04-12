@@ -3,7 +3,7 @@ import withMails from "../hoc/withMails";
 
 const MailBox = ({ mails, selectedFolder }) => {
   return (
-    <div className="col-md-9">
+    <>
       <div className="card card-primary card-outline">
         <div className="card-header">
           <h3 className="card-title">{selectedFolder}</h3>
@@ -55,9 +55,9 @@ const MailBox = ({ mails, selectedFolder }) => {
           <div className="table-responsive mailbox-messages">
             <table className="table table-hover table-striped">
               <tbody>
-                {mails?.map((mail) => {
+                {mails?.map((mail, index) => {
                   return (
-                    <tr>
+                    <tr key={`mail-item-list-${index}`}>
                       <td>
                         <div className="icheck-primary">
                           <input type="checkbox" value="" id="check1" />
@@ -119,7 +119,7 @@ const MailBox = ({ mails, selectedFolder }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
