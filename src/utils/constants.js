@@ -9,3 +9,7 @@ export const Routes = Object.freeze({
 export const localStorageKeys = {
   TOKEN: "token",
 };
+
+export const PAGE_LIMIT = 50;
+
+export const DEBOUNCE_DELAY = 800

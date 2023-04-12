@@ -2,7 +2,7 @@ import { Navigate, useRoutes } from "react-router-dom";
 
 import { MainLayout } from "../layout/MainLayout";
 import PrivateRoute from "../components/PrivateRoute";
-import { Routes } from "../utils/const";
+import { Routes } from "../utils/constants";
 import { lazy } from "react";
 
 export default function Router() {
