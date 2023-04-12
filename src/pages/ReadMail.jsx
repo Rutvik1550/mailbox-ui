@@ -2,7 +2,7 @@ import React from "react";
 
 export default function ReadMail() {
   return (
-    <div class="col-md-9">
+    <>
       <div class="card card-primary card-outline">
         <div class="card-header">
           <h3 class="card-title">Read Mail</h3>
@@ -177,6 +177,6 @@ export default function ReadMail() {
           </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
