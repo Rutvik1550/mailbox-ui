@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 import React from "react";
-import { Routes } from "../utils/const";
+import { Routes } from "../utils/constants";
 import { useAuthContext } from "../context/auth";
 import withAuthToken from "../hoc/withAuthToken";
 

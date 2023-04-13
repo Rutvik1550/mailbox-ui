@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Loader from "../components/Loader";
-import { localStorageKeys } from "../utils/const";
+import { localStorageKeys } from "../utils/constants";
 import { useAuthContext } from "../context/auth";
 import { useAuthService } from "../services/auth.service";
 import withLoader from "./withLoader";
