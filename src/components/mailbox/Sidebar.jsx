@@ -39,7 +39,6 @@ const Sidebar = ({ mailFolderList }) => {
       const folderRoutes = folder.FolderName.split("/");
       const key = folderRoutes[0];
       const childRoutes = folderRoutes[1];
-
       if (childRoutes) {
         if (filterFolders[key]) {
           filterFolders[key].push(childRoutes);
@@ -58,8 +57,8 @@ const Sidebar = ({ mailFolderList }) => {
   };
   return (
     <>
-      <Link to={Routes[location.pathname]["link"]} className="btn btn-primary btn-block mb-3">
-        {Routes[location.pathname]["title"]}
+      <Link to={Routes[location.pathname]?.link} className="btn btn-primary btn-block mb-3">
+        {Routes[location.pathname]?.title}
       </Link>
 
       <div className={`card ${isCollapse ? "collapsed-card" : ""}`}>
