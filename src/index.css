@@ -24,3 +24,7 @@ code {
   background: rgba(1, 1, 1, 0.5);
   height: 100%;
 }
+
+.mailbox-read-message {
+  white-space: pre-wrap;
+}
