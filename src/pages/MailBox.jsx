@@ -4,7 +4,6 @@ import { useDebounce } from "../hooks/useDebounce";
 import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes } from "../utils/constants";
 import { useNavigate } from "react-router";
 import { useMailContext } from "../context/mail";
-
 const MailBox = ({ mails, selectedFolder }) => {
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
