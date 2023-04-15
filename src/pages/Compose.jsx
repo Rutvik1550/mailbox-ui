@@ -2,13 +2,25 @@ import "bootstrap/js/dist/modal";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/tooltip";
 
-import React from "react";
+import React, { useState } from "react";
 import ReactSummernote from "react-summernote";
 
 const Compose = () => {
+  const [ mailDetails, setMailDetails ] = useState({})
+
   const handleChangeSummernote = (content) => {
     console.log("content:", content);
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if(name) {
+      setMailDetails(prevVal => ({
+        ...prevVal,
+        [name]: value
+      }))
+    }
+  }
 
   return (
     <>
@@ -19,7 +31,7 @@ const Compose = () => {
 
         <div className="card-body">
           <div className="form-group">
-            <input className="form-control" placeholder="To:" />
+            <input className="form-control" name="To" placeholder="To:" onChange={(e) => handleChange(e)} />
           </div>
           <div className="form-group">
             <input className="form-control" placeholder="Subject:" />
@@ -57,7 +69,7 @@ const Compose = () => {
             <button type="button" className="btn btn-default">
               <i className="fas fa-pencil-alt"></i> Draft
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary ml-2">
               <i className="far fa-envelope"></i> Send
             </button>
           </div>

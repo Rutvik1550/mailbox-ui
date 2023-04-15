@@ -33,4 +33,11 @@ class MailServices extends BaseService {
       Msgnum: msgNum,
       FolderName: folderName,
     });
+
+  deleteEmail = async (msgNum, folderName) =>
+    await this._callApi("POST", "/api/Login/DeleteEmail", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      Msgnum: msgNum,
+      MailFolderName: folderName,
+    });
 }

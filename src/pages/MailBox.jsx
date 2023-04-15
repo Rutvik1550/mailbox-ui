@@ -10,6 +10,16 @@ const MailBox = ({ mails, selectedFolder }) => {
   const [filteredMails, setFilteredMails] = useState(mails);
   const navigate = useNavigate();
   const mailContext = useMailContext();
+  const [selectedMails, setSelectedMails] = useState([]);
+  const [allSelected, setAllSelected] = useState(false);
+
+  useEffect(() => {
+    if (allSelected) {
+      setSelectedMails(perPageMails.map((mail) => mail.MSGNUM));
+    } else {
+      setSelectedMails([]);
+    }
+  }, [allSelected]);
 
   const perPageMails = useMemo(() => {
     const skip = (page - 1) * PAGE_LIMIT;
@@ -23,6 +33,7 @@ const MailBox = ({ mails, selectedFolder }) => {
   const searchQuery = useDebounce(searchText, DEBOUNCE_DELAY);
 
   const handleSearchEmail = (searchText) => {
+    setPage(1);
     const filteredByTextMails = mails.filter((mail) => mail.FROMMAIL.includes(searchText) || mail.SUBJECT.includes(searchText));
     setFilteredMails(filteredByTextMails);
   };
@@ -35,10 +46,15 @@ const MailBox = ({ mails, selectedFolder }) => {
     navigate(`../${Routes.home}/${Routes.readMail.replace(":id", mail.MSGNUM)}?folder=${mailContext.selectedFolder}`);
   };
 
+  const handleAllmailCheck = () => {
+    setAllSelected((prev) => !prev);
+    console.log(allSelected,'alll')
+  };
+
   const MailBoxControls = () => (
     <div className="mailbox-controls">
-      <button type="button" className="btn btn-default btn-sm checkbox-toggle">
-        <i className="far fa-square"></i>
+      <button type="button" className="btn btn-default btn-sm checkbox-toggle" onClick={handleAllmailCheck}>
+        <i className={`far ${allSelected ? "fa-square-check fa-solid" : "fa-square"}`}></i>
       </button>
       <div className="btn-group">
         <button type="button" className="btn btn-default btn-sm">
@@ -55,11 +71,11 @@ const MailBox = ({ mails, selectedFolder }) => {
       <button type="button" className="btn btn-default btn-sm">
         <i className="fas fa-sync-alt"></i>
       </button>
-      <div className="float-right">
+      <div className="float-right d-flex align-items-center">
         {`${(page - 1) * PAGE_LIMIT + 1}-${page * PAGE_LIMIT > filteredMails.length ? filteredMails.length : page * PAGE_LIMIT}/${
           filteredMails.length
         }`}
-        <div className="btn-group">
+        <div className="btn-group ml-1">
           <button
             type="button"
             onClick={() => {
@@ -76,7 +92,7 @@ const MailBox = ({ mails, selectedFolder }) => {
             }}
             type="button"
             className="btn btn-default btn-sm"
-            disabled={page * PAGE_LIMIT > filteredMails.length}
+            disabled={(filteredMails.length % 50 == 0 ? page + 1 : page) * PAGE_LIMIT > filteredMails.length}
           >
             <i className="fas fa-chevron-right"></i>
           </button>
@@ -84,6 +100,14 @@ const MailBox = ({ mails, selectedFolder }) => {
       </div>
     </div>
   );
+
+  const handleMailCheckBox = (e, id) => {
+    if (e?.target?.checked) {
+      setSelectedMails((prevVal) => [...prevVal, id]);
+    } else {
+      setSelectedMails((prevVal) => [...prevVal.filter((mail) => mail !== id)]);
+    }
+  };
 
   return (
     <>
@@ -120,17 +144,22 @@ const MailBox = ({ mails, selectedFolder }) => {
                 ) : (
                   perPageMails?.map((mail, index) => {
                     return (
-                      <tr key={`mail-item-list-${index}`}>
+                      <tr key={`mail-item-list-${index}-${mail.MSGNUM}`}>
                         <td>
                           <div className="icheck-primary">
-                            <input type="checkbox" value="" id="check1" />
-                            <label htmlFor="check1"></label>
+                            <input
+                              type="checkbox"
+                              onChange={(e) => handleMailCheckBox(e, mail.MSGNUM)}
+                              checked={selectedMails.includes(mail.MSGNUM)}
+                              id={`check-${mail.MSGNUM}`}
+                            />
+                            <label htmlFor={`check-${mail.MSGNUM}`}></label>
                           </div>
                         </td>
                         <td className="mailbox-star">
-                          <a href="#">
+                          <span>
                             <i className="fas fa-star text-warning"></i>
-                          </a>
+                          </span>
                         </td>
                         <td className="mailbox-name">
                           <a

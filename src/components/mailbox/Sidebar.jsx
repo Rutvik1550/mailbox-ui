@@ -20,13 +20,13 @@ const Routes = {
 
 const Sidebar = ({ mailFolderList }) => {
   const location = useLocation();
-  const [isCollapse, setIsCollapse] = useState(false);
+  // const [isCollapse, setIsCollapse] = useState(false);
   const [isCollapseSubFolder, setIsCollapseSubFolder] = useState({});
   const mailContext = useMailContext();
 
-  const handleCollapse = () => {
-    setIsCollapse(!isCollapse);
-  };
+  // const handleCollapse = () => {
+  //   setIsCollapse(!isCollapse);
+  // };
 
   const handleCollapseSubFolder = (key) => {
     const t = isCollapseSubFolder[key];
@@ -34,19 +34,22 @@ const Sidebar = ({ mailFolderList }) => {
   };
 
   const filteredFolders = useMemo(() => {
-    let filterFolders = {};
+    let filterFolders = {
+      folders: [],
+      accordionFolders: {}
+    };
     mailFolderList?.map((folder) => {
       const folderRoutes = folder.FolderName.split("/");
       const key = folderRoutes[0];
       const childRoutes = folderRoutes[1];
       if (childRoutes) {
-        if (filterFolders[key]) {
-          filterFolders[key].push(childRoutes);
+        if (filterFolders.accordionFolders[key]) {
+          filterFolders.accordionFolders[key].push(childRoutes);
         } else {
-          filterFolders[key] = [childRoutes];
+          filterFolders.accordionFolders[key] = [childRoutes];
         }
       } else {
-        filterFolders[key] = [];
+        filterFolders.folders.push(key);
       }
     });
     return filterFolders;
@@ -55,85 +58,55 @@ const Sidebar = ({ mailFolderList }) => {
   const handleFolderClick = (key) => {
     mailContext.setSelectedFolder(key);
   };
+
   return (
     <>
-      <Link to={Routes[location.pathname]?.link} className="btn btn-primary btn-block mb-3">
-        {Routes[location.pathname]?.title}
+      <Link to={(Routes[location.pathname] ?? Routes["/mailbox/read-mail"])?.link} className="btn btn-primary btn-block mb-3">
+        {(Routes[location.pathname] ?? Routes["/mailbox/read-mail"])?.title}
       </Link>
 
-      <div className={`card ${isCollapse ? "collapsed-card" : ""}`}>
+      <div className={`card`}>
         <div className="card-header">
-          <h3 className="card-title">Folders</h3>
-          <div className="card-tools">
-            <button type="button" className="btn btn-tool" onClick={handleCollapse} data-card-widget="collapse">
-              <i className="fas fa-minus"></i>
-            </button>
-          </div>
+          <h3 className="card-header-title">Folders</h3>
         </div>
         <div className="card-body p-0">
           <div className="flex-column accordion">
-            {Object.entries(filteredFolders)?.map((value, index) => {
-              if (!value[1].length) {
-                return (
-                  // <li
-                  //   className="nav-item active accordion-button"
-                  //   onClick={() => {
-                  //     handleFolderClick(value[0]);
-                  //   }}
-                  // >
-                  //   <span className="nav-link">
-                  //     {value[0]}
-                  //   </span>
-                  // </li>
-                  <div className="card-header" id="headingOne" key={`accordion-title-${index}`}>
+            {filteredFolders.folders?.map((folder, index) => {
+              return (
+                  <div className="card-header" key={`accordion-title-${index}`}>
                     <h2 className="mb-0">
-                      <button className="btn btn-block text-left" type="button" onClick={() => handleFolderClick(value[0])}>
-                      <i className="fa-sharp fa-regular fa-circle-dot"></i> {value[0]}
+                      <button className="btn btn-block text-left" type="button" onClick={() => handleFolderClick(folder)}>
+                        {folder}
                       </button>
                     </h2>
                   </div>
                 );
-              } else {
+              })}
+            {Object.entries(filteredFolders.accordionFolders)?.map((value, index) => {
                 return (
                   <div className={`card mb-0 ${!isCollapseSubFolder[value[0]] ? "collapsed-card" : ""}`} key={`accordion-title-${index}`}>
-                    <div className="card-header">
-                      <h3 className="card-title">{value[0]}</h3>
+                    <div
+                      className="card-header"
+                      onClick={() => {
+                        handleCollapseSubFolder(value[0]);
+                      }}
+                    >
+                      <h3 className="card-title accordion__title">{value[0]}</h3>
                       <div className="card-tools">
-                        <button
-                          type="button"
-                          className="btn btn-tool"
-                          onClick={() => {
-                            handleCollapseSubFolder(value[0]);
-                          }}
-                          data-card-widget="collapse"
-                        >
-                          <i className="fas fa-minus"></i>
+                        <button type="button" className="btn btn-tool" data-card-widget="collapse">
+                          <i className={`fas ${!isCollapseSubFolder[value[0]] ? "fa-plus" : "fa-minus"}`}></i>
                         </button>
                       </div>
                     </div>
                     <div className="card-body p-0">
                       {value[1].map((subFolder, idx) => {
                         return (
-                          // <li
-                          //   key={`accordion-item-${idx}`}
-                          //   className="nav-item"
-                          //   onClick={() => {
-                          //     handleFolderClick(value[0] + "/" + subFolder);
-                          //   }}
-                          // >
-                          //   <span className="nav-link">
-                          //     <i className="far fa-envelope"></i> {subFolder}
-                          //   </span>
-                          // </li>
-                          <div
-                            id="collapseOne"
-                            key={`accordion-item-${idx}`}
-                            className="collapse show border-bottom pl-3"
-                            onClick={() => handleFolderClick(value[0] + "/" + subFolder)}
-                          >
-                            <div className="card-body">
-                              <i className="fa-sharp fa-regular fa-circle-dot"></i> {subFolder}
-                            </div>
+                          <div className="card-header" key={`accordion-item-${idx}`}>
+                            <h2 className="mb-0">
+                              <button className="btn btn-block text-left" type="button" onClick={() => handleFolderClick(value[0] + "/" + subFolder)}>
+                                {subFolder}
+                              </button>
+                            </h2>
                           </div>
                         );
                       })}
@@ -141,7 +114,7 @@ const Sidebar = ({ mailFolderList }) => {
                   </div>
                 );
               }
-            })}
+            )}
           </div>
         </div>
         {/* /.card-body */}
