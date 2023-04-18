@@ -35,7 +35,7 @@ const withMails = (WrappedComponent) => {
       }
     };
 
-    return <WrappedComponentWithLoading loading={loading} mails={mails} selectedFolder={mailContext.selectedFolder} />;
+    return <WrappedComponentWithLoading loading={loading} mails={mails} fetchMails={fetchMails} selectedFolder={mailContext.selectedFolder} mailService={mailService} />;
   };
 };
 

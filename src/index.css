@@ -116,8 +116,29 @@ code {
 
 .search-form-container {
   background-color: #fff;
+  top: 32px;
+  right: 0;
+  z-index: 99;
+}
+
+.search-form-container .search-form-wrapper {
+  padding: 16px;
 }
 
 .search-form-wrapper .form-group {
   display: flex;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  min-width: 100px;
+  font-weight: 500 !important;
+}
+
+.form-group input.form-control {
+  height: 2rem;
+}
+
+.react-multi-select {
+  width: 100%;
 }

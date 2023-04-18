@@ -6,6 +6,16 @@ export const Routes = Object.freeze({
   error: "error",
 });
 
+export const emptyFilterOption = {
+  "SearchByFrom": "",
+  "SearchByTo_CC": "",
+  "SearchSubject": "",
+  "SearchWords": "",
+  "AttachmentSize": "",
+  "StartDate": "",
+  "EndDate": ""
+}
+
 export const localStorageKeys = {
   TOKEN: "token",
 };

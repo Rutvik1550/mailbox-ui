@@ -17,7 +17,11 @@ const ReadMail = ({ messageDetails }) => {
   const handleDeleteMail = async () => {
     try {
       const FolderName = searchParams.get("folder");
-      const res = await mailService.deleteEmail(id, FolderName);
+      const payload = {
+        Msgnum: id, 
+        MailFolderName: FolderName
+      }
+      const res = await mailService.deleteEmail([payload]);
       if(res === "Success") {
         navigate(-1)
       }

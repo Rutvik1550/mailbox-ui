@@ -1,10 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import withMails from "../hoc/withMails";
 import { useDebounce } from "../hooks/useDebounce";
-import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes } from "../utils/constants";
+import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes, emptyFilterOption } from "../utils/constants";
 import { useNavigate } from "react-router";
 import { useMailContext } from "../context/mail";
-const MailBox = ({ mails, selectedFolder }) => {
+import { SearchForm } from "../components/SearchForm";
+
+const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
   const [page, setPage] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [filteredMails, setFilteredMails] = useState(mails);
@@ -12,10 +14,12 @@ const MailBox = ({ mails, selectedFolder }) => {
   const mailContext = useMailContext();
   const [selectedMails, setSelectedMails] = useState([]);
   const [allSelected, setAllSelected] = useState(false);
+  const [filterOptions, setFilterOptions] = useState(emptyFilterOption);
+  const [openFiler, setOpenFilter] = useState(false);
 
   useEffect(() => {
     if (allSelected) {
-      setSelectedMails(perPageMails.map((mail) => mail.MSGNUM));
+      setSelectedMails(perPageMails.map((mail) => ({ Msgnum: mail.MSGNUM, MailFolderName: mail.FolderName })));
     } else {
       setSelectedMails([]);
     }
@@ -32,10 +36,19 @@ const MailBox = ({ mails, selectedFolder }) => {
 
   const searchQuery = useDebounce(searchText, DEBOUNCE_DELAY);
 
-  const handleSearchEmail = (searchText) => {
+  const handleSearchEmail = async (searchText) => {
     setPage(1);
-    const filteredByTextMails = mails.filter((mail) => mail.FROMMAIL.includes(searchText) || mail.SUBJECT.includes(searchText));
-    setFilteredMails(filteredByTextMails);
+    // const filteredByTextMails = mails.filter((mail) => mail.FROMMAIL.includes(searchText) || mail.SUBJECT.includes(searchText));
+    // setFilteredMails(filteredByTextMails);
+    if (searchText) {
+      const res = await mailService.searchEmail({
+        ...emptyFilterOption,
+        SearchWords: searchText,
+      });
+      setFilteredMails(res.emailLists);
+    } else {
+      setFilteredMails(mails);
+    }
   };
 
   useEffect(() => {
@@ -48,8 +61,25 @@ const MailBox = ({ mails, selectedFolder }) => {
 
   const handleAllmailCheck = () => {
     setAllSelected((prev) => !prev);
-    console.log(allSelected,'alll')
   };
+
+  const handleDeleteMails = async () => {
+    try {
+      await mailService.deleteEmail(selectedMails);
+      setSelectedMails([]);
+      fetchMails(selectedFolder);
+    } catch (e) {
+      console.log("exception", e);
+    }
+  };
+
+  const handleRefreshMails = async () => {
+    try {
+      fetchMails(selectedFolder)
+    } catch (error) {
+      console.log("Error with Refresh mails:", error)
+    }
+  }
 
   const MailBoxControls = () => (
     <div className="mailbox-controls">
@@ -57,7 +87,7 @@ const MailBox = ({ mails, selectedFolder }) => {
         <i className={`far ${allSelected ? "fa-square-check fa-solid" : "fa-square"}`}></i>
       </button>
       <div className="btn-group">
-        <button type="button" className="btn btn-default btn-sm">
+        <button type="button" className="btn btn-default btn-sm" onClick={handleDeleteMails}>
           <i className="far fa-trash-alt"></i>
         </button>
         <button type="button" className="btn btn-default btn-sm">
@@ -68,9 +98,19 @@ const MailBox = ({ mails, selectedFolder }) => {
         </button>
       </div>
 
-      <button type="button" className="btn btn-default btn-sm">
+      <button type="button" className="btn btn-default btn-sm" onClick={handleRefreshMails}>
         <i className="fas fa-sync-alt"></i>
       </button>
+      {/* <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown button
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </div> */}
       <div className="float-right d-flex align-items-center">
         {`${(page - 1) * PAGE_LIMIT + 1}-${page * PAGE_LIMIT > filteredMails.length ? filteredMails.length : page * PAGE_LIMIT}/${
           filteredMails.length
@@ -101,11 +141,25 @@ const MailBox = ({ mails, selectedFolder }) => {
     </div>
   );
 
-  const handleMailCheckBox = (e, id) => {
+  const handleMailCheckBox = (e, id, FolderName) => {
     if (e?.target?.checked) {
-      setSelectedMails((prevVal) => [...prevVal, id]);
+      setSelectedMails((prevVal) => [...prevVal, { Msgnum: id, MailFolderName: FolderName }]);
     } else {
-      setSelectedMails((prevVal) => [...prevVal.filter((mail) => mail !== id)]);
+      setSelectedMails((prevVal) => [...prevVal.filter((mail) => mail.Msgnum !== id)]);
+    }
+  };
+
+  const handleOpenFilter = () => {
+    setOpenFilter((prev) => !prev);
+  };
+
+  const handleSearch = async () => {
+    if (Object.values(filterOptions).every((item) => item == "")) {
+      setFilterOptions(mails);
+    } else {
+      setOpenFilter(false);
+      const res = await mailService.searchEmail(filterOptions);
+      setFilteredMails(res.emailLists);
     }
   };
 
@@ -113,7 +167,7 @@ const MailBox = ({ mails, selectedFolder }) => {
     <>
       <div className="card card-primary card-outline">
         <div className="card-header">
-          <h3 className="card-title">{selectedFolder}</h3>
+          <h3 className="card-title">{searchText || !Object.values(filterOptions).every((item) => item == "") ? "Seach Result" : selectedFolder}</h3>
 
           <div className="card-tools">
             <div className="input-group input-group-sm">
@@ -125,11 +179,17 @@ const MailBox = ({ mails, selectedFolder }) => {
                   setSearchText(e.target.value);
                 }}
               />
-              <div className="input-group-append">
+              <div className="input-group-append" onClick={handleOpenFilter}>
+                <div className="btn">
+                  <i className="fas fa-solid fa-filter"></i>
+                </div>
+              </div>
+              <div className="input-group-append" onClick={handleSearch}>
                 <div className="btn btn-primary">
                   <i className="fas fa-search"></i>
                 </div>
               </div>
+              {openFiler && <SearchForm filterOptions={filterOptions} setOpenFilter={setOpenFilter} setFilterOptions={setFilterOptions} />}
             </div>
           </div>
         </div>
@@ -149,8 +209,8 @@ const MailBox = ({ mails, selectedFolder }) => {
                           <div className="icheck-primary">
                             <input
                               type="checkbox"
-                              onChange={(e) => handleMailCheckBox(e, mail.MSGNUM)}
-                              checked={selectedMails.includes(mail.MSGNUM)}
+                              onChange={(e) => handleMailCheckBox(e, mail.MSGNUM, mail.FolderName)}
+                              checked={selectedMails.filter((item) => item.Msgnum == mail.MSGNUM).length > 0}
                               id={`check-${mail.MSGNUM}`}
                             />
                             <label htmlFor={`check-${mail.MSGNUM}`}></label>

@@ -4,9 +4,11 @@ import "bootstrap/js/dist/tooltip";
 
 import React, { useState } from "react";
 import ReactSummernote from "react-summernote";
+import MultiSelect from "../components/MultiSelect";
 
 const Compose = () => {
   const [ mailDetails, setMailDetails ] = useState({})
+  const [ openCC, setOpenCC ] = useState(false)
 
   const handleChangeSummernote = (content) => {
     console.log("content:", content);
@@ -21,6 +23,10 @@ const Compose = () => {
       }))
     }
   }
+  
+  const handleCCOpen = () => {
+    setOpenCC(prev => !prev)
+  }
 
   return (
     <>
@@ -30,9 +36,19 @@ const Compose = () => {
         </div>
 
         <div className="card-body">
-          <div className="form-group">
+          <div className="form-group d-flex">
             <input className="form-control" name="To" placeholder="To:" onChange={(e) => handleChange(e)} />
+            <button className="btn btn-secondary float-right ml-2 pt-0 pb-0" onClick={handleCCOpen} >CC</button>
           </div>
+          {openCC && <>
+            <div className="form-group">
+              {/* <input className="form-control" name="CC" placeholder="CC:" onChange={(e) => handleChange(e)} /> */}
+              <MultiSelect />
+            </div>
+            <div className="form-group">
+              <input className="form-control" name="BCC" placeholder="BCC:" onChange={(e) => handleChange(e)} />
+            </div>
+          </>}
           <div className="form-group">
             <input className="form-control" placeholder="Subject:" />
           </div>

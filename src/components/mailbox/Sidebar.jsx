@@ -49,9 +49,15 @@ const Sidebar = ({ mailFolderList }) => {
           filterFolders.accordionFolders[key] = [childRoutes];
         }
       } else {
-        filterFolders.folders.push(key);
+        if(key == "Inbox") {
+          filterFolders.folders.splice(0, 0, key)
+        } else {
+          filterFolders.folders.push(key);
+        }
       }
     });
+    
+    mailContext.setSelectedFolder(filterFolders.folders[0]);
     return filterFolders;
   }, [mailFolderList]);
 
