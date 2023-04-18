@@ -2,13 +2,31 @@ import "bootstrap/js/dist/modal";
 import "bootstrap/js/dist/dropdown";
 import "bootstrap/js/dist/tooltip";
 
-import React from "react";
+import React, { useState } from "react";
 import ReactSummernote from "react-summernote";
+import MultiSelect from "../components/MultiSelect";
 
 const Compose = () => {
+  const [ mailDetails, setMailDetails ] = useState({})
+  const [ openCC, setOpenCC ] = useState(false)
+
   const handleChangeSummernote = (content) => {
     console.log("content:", content);
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if(name) {
+      setMailDetails(prevVal => ({
+        ...prevVal,
+        [name]: value
+      }))
+    }
+  }
+  
+  const handleCCOpen = () => {
+    setOpenCC(prev => !prev)
+  }
 
   return (
     <>
@@ -18,9 +36,19 @@ const Compose = () => {
         </div>
 
         <div className="card-body">
-          <div className="form-group">
-            <input className="form-control" placeholder="To:" />
+          <div className="form-group d-flex">
+            <input className="form-control" name="To" placeholder="To:" onChange={(e) => handleChange(e)} />
+            <button className="btn btn-secondary float-right ml-2 pt-0 pb-0" onClick={handleCCOpen} >CC</button>
           </div>
+          {openCC && <>
+            <div className="form-group">
+              {/* <input className="form-control" name="CC" placeholder="CC:" onChange={(e) => handleChange(e)} /> */}
+              <MultiSelect />
+            </div>
+            <div className="form-group">
+              <input className="form-control" name="BCC" placeholder="BCC:" onChange={(e) => handleChange(e)} />
+            </div>
+          </>}
           <div className="form-group">
             <input className="form-control" placeholder="Subject:" />
           </div>
@@ -57,7 +85,7 @@ const Compose = () => {
             <button type="button" className="btn btn-default">
               <i className="fas fa-pencil-alt"></i> Draft
             </button>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary ml-2">
               <i className="far fa-envelope"></i> Send
             </button>
           </div>

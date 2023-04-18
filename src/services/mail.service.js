@@ -33,4 +33,22 @@ class MailServices extends BaseService {
       Msgnum: msgNum,
       FolderName: folderName,
     });
+
+  deleteEmail = async (mails) =>
+    await this._callApi("POST", "/api/Login/DeleteEmail", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      delEmailLists: mails
+    });
+  
+  searchEmail = async (searchOptions) =>
+    await this._callApi("POST", "/api/Login/FilterEmails", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      ...searchOptions
+    });
+
+  autoFillEmail = async (text) =>
+    await this._callApi("POST", "/api/Login/GetAutoFillTo_CC", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      SearchKeyword: text
+    });
 }

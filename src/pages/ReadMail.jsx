@@ -1,24 +1,49 @@
 import React from "react";
 import withMessageDetails from "../hoc/withMessageDetails";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useAuthContext } from "../context/auth";
+import { useMailService } from "../services/mail.service";
 
 const ReadMail = ({ messageDetails }) => {
+  const authContext = useAuthContext();
+  const mailService = useMailService(authContext.token);
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate()
   if (!messageDetails) {
     return <div>No Mail Found</div>;
   }
+  
+  const handleDeleteMail = async () => {
+    try {
+      const FolderName = searchParams.get("folder");
+      const payload = {
+        Msgnum: id, 
+        MailFolderName: FolderName
+      }
+      const res = await mailService.deleteEmail([payload]);
+      if(res === "Success") {
+        navigate(-1)
+      }
+    } catch (error) {
+      console.log("Error with Delete mail.", error)
+    }
+  }
+
   return (
     <>
       <div className="card card-primary card-outline">
         <div className="card-header">
           <h3 className="card-title">Read Mail</h3>
 
-          <div className="card-tools">
+          {/* <div className="card-tools">
             <a href="#" className="btn btn-tool" title="Previous">
               <i className="fas fa-chevron-left"></i>
             </a>
             <a href="#" className="btn btn-tool" title="Next">
               <i className="fas fa-chevron-right"></i>
             </a>
-          </div>
+          </div> */}
         </div>
 
         <div className="card-body p-0">
@@ -26,11 +51,11 @@ const ReadMail = ({ messageDetails }) => {
             <h5>{messageDetails.Subject}</h5>
             <h6>
               From: {messageDetails.FromMail}
-              <span className="mailbox-read-time float-right">15 Feb. 2015 11:03 PM</span>
+              <span className="mailbox-read-time float-right">{messageDetails.RecieveDate}</span>
             </h6>
           </div>
 
-          <div className="mailbox-controls with-border text-center">
+          {/* <div className="mailbox-controls with-border text-center">
             <div className="btn-group">
               <button type="button" className="btn btn-default btn-sm" data-container="body" title="Delete">
                 <i className="far fa-trash-alt"></i>
@@ -46,7 +71,7 @@ const ReadMail = ({ messageDetails }) => {
             <button type="button" className="btn btn-default btn-sm" title="Print">
               <i className="fas fa-print"></i>
             </button>
-          </div>
+          </div> */}
 
           <div className="mailbox-read-message" dangerouslySetInnerHTML={{ __html: messageDetails.TextBody }   }></div>
           {/* <p>
@@ -93,7 +118,7 @@ const ReadMail = ({ messageDetails }) => {
               <i className="fas fa-share"></i> Forward
             </button>
           </div>
-          <button type="button" className="btn btn-default">
+          <button type="button" className="btn btn-default" onClick={handleDeleteMail}>
             <i className="far fa-trash-alt"></i> Delete
           </button>
           <button type="button" className="btn btn-default">
