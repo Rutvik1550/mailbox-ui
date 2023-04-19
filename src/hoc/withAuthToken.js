@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Loader from "../components/Loader";
 import { localStorageKeys } from "../utils/constants";
@@ -11,6 +11,7 @@ const withAuthToken = (WrappedComponent) => {
     const authContext = useAuthContext();
     const authService = useAuthService();
     const [loading, setLoading] = useState(false);
+    const interval = useRef();
 
     const WrappedComponentWithLoading = withLoader(WrappedComponent, Loader);
 
@@ -21,7 +22,28 @@ const withAuthToken = (WrappedComponent) => {
       } else {
         fetchToken();
       }
+    }, [localStorage.getItem(localStorageKeys.TOKEN)]);
+
+    useEffect(() => {
+      refreshToken();
+
+      return () => {
+        if (interval.current) {
+          clearInterval(interval);
+        }
+      };
     }, []);
+
+    const refreshToken = () => {
+      interval.current = setInterval(async () => {
+        const itemStr = localStorage.getItem(localStorageKeys.TOKEN);
+
+        const now = new Date();
+        if (itemStr && now.getTime() < JSON.parse(itemStr).expiry) return;
+
+        fetchToken();
+      }, [1000]);
+    };
 
     const fetchToken = async () => {
       try {

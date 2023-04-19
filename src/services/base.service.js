@@ -1,3 +1,5 @@
+import { localStorageKeys } from "../utils/constants";
+
 const isError = (error) => {
   return error instanceof Error;
 };
@@ -71,6 +73,10 @@ export default class BaseService {
           });
         }
       } else {
+        if (res.status === 401) {
+          localStorage.removeItem(localStorageKeys.TOKEN);
+        }
+
         const resError = await res.text();
         return this.#response({
           success: false,
