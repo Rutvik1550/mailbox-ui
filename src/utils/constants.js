@@ -23,3 +23,18 @@ export const localStorageKeys = {
 export const PAGE_LIMIT = 50;
 
 export const DEBOUNCE_DELAY = 800
+
+export const sortSelectOptions = [
+  {
+    label: "From",
+    value: "FROMMAIL",
+  },
+  {
+    label: "Subject",
+    value: "SUBJECT",
+  },
+  {
+    label: "Date",
+    value: "RecieveDate",
+  },
+];

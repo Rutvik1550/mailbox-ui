@@ -5,27 +5,102 @@ import "bootstrap/js/dist/tooltip";
 import React, { useState } from "react";
 import ReactSummernote from "react-summernote";
 import MultiSelect from "../components/MultiSelect";
+import { useAuthContext } from "../context/auth";
+import { useMailService } from "../services/mail.service";
+import { useNavigate } from "react-router-dom";
 
 const Compose = () => {
-  const [ mailDetails, setMailDetails ] = useState({})
-  const [ openCC, setOpenCC ] = useState(false)
+  const [mailDetails, setMailDetails] = useState({});
+  const [openCC, setOpenCC] = useState(false);
+  const authContext = useAuthContext();
+  const mailService = useMailService(authContext.token);
+  const [Attachments, setAttachments] = useState([]);
+  const navigate = useNavigate();
 
   const handleChangeSummernote = (content) => {
-    console.log("content:", content);
+    setMailDetails((prevVal) => ({
+      ...prevVal,
+      BodyText: content,
+    }));
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if(name) {
-      setMailDetails(prevVal => ({
+  const handleChange = (value, name) => {
+    if (name) {
+      setMailDetails((prevVal) => ({
         ...prevVal,
-        [name]: value
-      }))
+        [name]: value,
+      }));
     }
-  }
-  
+  };
+
   const handleCCOpen = () => {
-    setOpenCC(prev => !prev)
+    setOpenCC((prev) => !prev);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    if (name) {
+      setMailDetails((prevVal) => ({
+        ...prevVal,
+        [name]: value,
+      }));
+    }
+  };
+
+  const handleSubmitMail = async () => {
+    try {
+      const res = await mailService.sendEmail({
+        ...mailDetails,
+        Attachments: Attachments,
+      });
+      if (res == "Sent") {
+        navigate('/mailbox')
+      }
+    } catch (error) {
+      console.log("Error with submit mail: ", error);
+    }
+  };
+
+  const handleFileSelect = async (event) => {
+    const { files: tempFiles } = event.target;
+    const files = [...tempFiles];
+    if (files?.length) {
+      const tempAttachment = [];
+      for await (const file of files) {
+        function getFile() {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+              const result = {
+                id: Attachments.length ? Attachments[Attachments.length - 1].id + 1 : Math.floor(Math.random() * 100000),
+                Filename: file["name"],
+                ContentType: file["type"],
+                base64string: reader.result,
+              };
+              resolve(result);
+            };
+            reader.onerror = function (error) {
+              console.log("Error: ", error);
+              reject();
+            };
+          });
+        }
+
+        const base64File = await getFile();
+        tempAttachment.push(base64File);
+      }
+
+      setAttachments([...Attachments, ...tempAttachment]);
+    }
+  };
+
+  const handleRemoveFile = (id) => {
+    setAttachments((prevVal) => prevVal.filter((file) => file.id !== id));
+  };
+
+  const handleDiscardMail = () => {
+    navigate('/mailbox')
   }
 
   return (
@@ -37,20 +112,29 @@ const Compose = () => {
 
         <div className="card-body">
           <div className="form-group d-flex">
-            <input className="form-control" name="To" placeholder="To:" onChange={(e) => handleChange(e)} />
-            <button className="btn btn-secondary float-right ml-2 pt-0 pb-0" onClick={handleCCOpen} >CC</button>
+            <div className="input-group d-flex flex-nowrap">
+              <MultiSelect name={"To"} onChange={handleChange} />
+              <button className="btn btn-secondary float-right ml-2 pt-0 pb-0" onClick={handleCCOpen}>
+                CC
+              </button>
+            </div>
           </div>
-          {openCC && <>
-            <div className="form-group">
-              {/* <input className="form-control" name="CC" placeholder="CC:" onChange={(e) => handleChange(e)} /> */}
-              <MultiSelect />
-            </div>
-            <div className="form-group">
-              <input className="form-control" name="BCC" placeholder="BCC:" onChange={(e) => handleChange(e)} />
-            </div>
-          </>}
+          {openCC && (
+            <>
+              <div className="form-group">
+                <div className="input-group mb-3 d-flex flex-nowrap">
+                  <MultiSelect name={"CC"} onChange={handleChange} />
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="input-group mb-3 d-flex flex-nowrap">
+                  <MultiSelect name={"BCC"} onChange={handleChange} />
+                </div>
+              </div>
+            </>
+          )}
           <div className="form-group">
-            <input className="form-control" placeholder="Subject:" />
+            <input className="form-control" placeholder="Subject:" name="Subject" onChange={handleInputChange} />
           </div>
           <div className="form-group">
             <ReactSummernote
@@ -74,22 +158,27 @@ const Compose = () => {
           <div className="form-group">
             <div className="btn btn-default btn-file">
               <i className="fas fa-paperclip"></i> Attachment
-              <input type="file" name="attachment" />
+              <input type="file" name="attachment" onChange={handleFileSelect} multiple />
             </div>
-            <p className="help-block">Max. 32MB</p>
+            <div className="files-container">
+              {Attachments?.map((file, index) => (
+                <div className="file-wrapper" key={`selected-files-${file.id}-${index}`}>
+                  <span>{file.Filename}</span>
+                  <i className="fa-solid fa-xmark" onClick={() => handleRemoveFile(file.id)}></i>
+                </div>
+              ))}
+            </div>
+            <p className="help-block">Max. 25MB</p>
           </div>
         </div>
 
         <div className="card-footer">
           <div className="float-right">
-            <button type="button" className="btn btn-default">
-              <i className="fas fa-pencil-alt"></i> Draft
-            </button>
-            <button type="submit" className="btn btn-primary ml-2">
+            <button type="submit" className="btn btn-primary ml-2" onClick={handleSubmitMail}>
               <i className="far fa-envelope"></i> Send
             </button>
           </div>
-          <button type="reset" className="btn btn-default">
+          <button type="reset" className="btn btn-default" onClick={handleDiscardMail}>
             <i className="fas fa-times"></i> Discard
           </button>
         </div>

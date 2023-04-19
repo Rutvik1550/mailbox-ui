@@ -51,4 +51,10 @@ class MailServices extends BaseService {
       Userid: "abhinav.singh@dayibpl.com",
       SearchKeyword: text
     });
+
+  sendEmail = async (body) =>
+    await this._callApi("POST", "/api/Login/SendEmail", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      ...body
+    });
 }

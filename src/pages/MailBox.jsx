@@ -1,10 +1,14 @@
 import React, { useMemo, useState, useEffect } from "react";
 import withMails from "../hoc/withMails";
 import { useDebounce } from "../hooks/useDebounce";
-import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes, emptyFilterOption } from "../utils/constants";
+import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes, emptyFilterOption, sortSelectOptions } from "../utils/constants";
 import { useNavigate } from "react-router";
 import { useMailContext } from "../context/mail";
 import { SearchForm } from "../components/SearchForm";
+import makeAnimated from "react-select/animated";
+import Select from "react-select";
+
+const animatedComponents = makeAnimated();
 
 const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
   const [page, setPage] = useState(1);
@@ -16,6 +20,10 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
   const [allSelected, setAllSelected] = useState(false);
   const [filterOptions, setFilterOptions] = useState(emptyFilterOption);
   const [openFiler, setOpenFilter] = useState(false);
+  const [sorting, setSorting] = useState({
+    type: "",
+    asce: true,
+  });
 
   useEffect(() => {
     if (allSelected) {
@@ -27,8 +35,18 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
   const perPageMails = useMemo(() => {
     const skip = (page - 1) * PAGE_LIMIT;
-    return filteredMails.slice(skip, skip + PAGE_LIMIT);
-  }, [page, filteredMails]);
+    const perPageFilterMails = filteredMails.slice(skip, skip + PAGE_LIMIT);
+    if (sorting.type) {
+      return perPageFilterMails.sort((a, b) => {
+        if (sorting.asce) {
+          return a[sorting.type].localeCompare(b[sorting.type], "en", { sensitivity: "base" });
+        } else {
+          return b[sorting.type].localeCompare(a[sorting.type], "en", { sensitivity: "base" });
+        }
+      });
+    }
+    return perPageFilterMails;
+  }, [page, filteredMails, sorting]);
 
   const handlePageChange = (page) => {
     setPage(page);
@@ -38,8 +56,6 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
   const handleSearchEmail = async (searchText) => {
     setPage(1);
-    // const filteredByTextMails = mails.filter((mail) => mail.FROMMAIL.includes(searchText) || mail.SUBJECT.includes(searchText));
-    // setFilteredMails(filteredByTextMails);
     if (searchText) {
       const res = await mailService.searchEmail({
         ...emptyFilterOption,
@@ -75,42 +91,50 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
   const handleRefreshMails = async () => {
     try {
-      fetchMails(selectedFolder)
+      fetchMails(selectedFolder);
     } catch (error) {
-      console.log("Error with Refresh mails:", error)
+      console.log("Error with Refresh mails:", error);
     }
-  }
+  };
+
+  const handleSortingSelect = (value) => {
+    if (value.value == sorting.type) {
+      setSorting((prevVal) => ({
+        ...prevVal,
+        asce: !prevVal.asce,
+      }));
+    } else {
+      setSorting({
+        type: value.value,
+        asce: true,
+      });
+    }
+  };
 
   const MailBoxControls = () => (
-    <div className="mailbox-controls">
-      <button type="button" className="btn btn-default btn-sm checkbox-toggle" onClick={handleAllmailCheck}>
-        <i className={`far ${allSelected ? "fa-square-check fa-solid" : "fa-square"}`}></i>
-      </button>
-      <div className="btn-group">
-        <button type="button" className="btn btn-default btn-sm" onClick={handleDeleteMails}>
-          <i className="far fa-trash-alt"></i>
+    <div className="mailbox-controls d-flex position-relative justify-content-between">
+      <div className="d-flex">
+        <button type="button" className="btn btn-default btn-sm checkbox-toggle" onClick={handleAllmailCheck}>
+          <i className={`far ${allSelected ? "fa-square-check fa-solid" : "fa-square"}`}></i>
         </button>
-        <button type="button" className="btn btn-default btn-sm">
-          <i className="fas fa-reply"></i>
-        </button>
-        <button type="button" className="btn btn-default btn-sm">
-          <i className="fas fa-share"></i>
-        </button>
-      </div>
-
-      <button type="button" className="btn btn-default btn-sm" onClick={handleRefreshMails}>
-        <i className="fas fa-sync-alt"></i>
-      </button>
-      {/* <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown button
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div className="btn-group">
+          <button type="button" className="btn btn-default btn-sm" onClick={handleDeleteMails}>
+            <i className="far fa-trash-alt"></i>
+          </button>
         </div>
-      </div> */}
+
+        <button type="button" className="btn btn-default btn-sm" onClick={handleRefreshMails}>
+          <i className="fas fa-sync-alt"></i>
+        </button>
+        <Select
+          closeMenuOnSelect={true}
+          components={animatedComponents}
+          defaultValue={sortSelectOptions.filter(option => option.value == sorting.type)}
+          onChange={handleSortingSelect}
+          className={`react-sorting-select`}
+          options={sortSelectOptions}
+        />
+      </div>
       <div className="float-right d-flex align-items-center">
         {`${(page - 1) * PAGE_LIMIT + 1}-${page * PAGE_LIMIT > filteredMails.length ? filteredMails.length : page * PAGE_LIMIT}/${
           filteredMails.length
@@ -155,7 +179,7 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
   const handleSearch = async () => {
     if (Object.values(filterOptions).every((item) => item == "")) {
-      setFilterOptions(mails);
+      setFilteredMails(mails);
     } else {
       setOpenFilter(false);
       const res = await mailService.searchEmail(filterOptions);
