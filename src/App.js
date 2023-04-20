@@ -5,6 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import Router from "./routes";
 import { Suspense } from "react";
 import { MailWrapper } from "./context/mail";
+import { MainLayout } from "./layout/MainLayout";
 
 function App() {
   return (
@@ -12,7 +13,9 @@ function App() {
       <BrowserRouter>
         <AuthWrapper>
           <MailWrapper>
-            <Router />
+            <MainLayout>
+              <Router />
+            </MainLayout>
           </MailWrapper>
         </AuthWrapper>
       </BrowserRouter>

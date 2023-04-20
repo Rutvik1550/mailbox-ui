@@ -1,9 +1,9 @@
 import React from "react";
 import Header from "../components/mailbox/Header";
-import { Outlet } from "react-router-dom";
 import Sidebar from "../components/mailbox/Sidebar";
 
-export const MainLayout = () => {
+export const MainLayout = (props) => {
+  console.log(props,'chile')
   return (
     <div className="content-wrapper">
       <Header />
@@ -14,7 +14,7 @@ export const MainLayout = () => {
               <Sidebar />
             </div>
             <div className="col-md-9">
-              <Outlet />
+              {props.children}
             </div>
           </div>
         </div>

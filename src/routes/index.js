@@ -4,6 +4,7 @@ import { MainLayout } from "../layout/MainLayout";
 import PrivateRoute from "../components/PrivateRoute";
 import { Routes } from "../utils/constants";
 import { lazy } from "react";
+import { RouteLayout } from "../layout/RouteLayout";
 
 export default function Router() {
   return useRoutes([
@@ -12,7 +13,7 @@ export default function Router() {
       children: [
         {
           path: Routes.home,
-          element: <MainLayout />,
+          element: <RouteLayout />,
           children: [
             {
               path: Routes.mailbox,

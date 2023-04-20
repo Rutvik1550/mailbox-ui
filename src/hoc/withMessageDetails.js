@@ -28,10 +28,10 @@ const withMessageDetails = (WrappedComponent) => {
     }, [id, searchParams]);
 
     useEffect(() => {
-      if (viewAsHtml && messageDetails) {
+      if (messageDetails) {
         fetchHtmlContent(messageDetails.HtmlBodyPath);
       }
-    }, [viewAsHtml]);
+    }, [messageDetails]);
 
     const fetchMessageDetails = async (msgNum, folderName) => {
       try {

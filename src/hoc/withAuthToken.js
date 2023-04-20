@@ -19,7 +19,7 @@ const withAuthToken = (WrappedComponent) => {
       const token = getToken();
       if (token) {
         authContext.setToken(token);
-      } else {
+      } else if(!loading) {
         fetchToken();
       }
     }, [localStorage.getItem(localStorageKeys.TOKEN)]);

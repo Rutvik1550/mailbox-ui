@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import React, { useMemo, useState } from "react";
 import withMailFolderList from "../../hoc/withMailFolderList";
 import { useMailContext } from "../../context/mail";
+import withAuthToken from "../../hoc/withAuthToken";
 
 const Routes = {
   "/mailbox": {
@@ -126,4 +127,4 @@ const Sidebar = ({ mailFolderList }) => {
   );
 };
 
-export default withMailFolderList(Sidebar);
+export default withAuthToken(withMailFolderList(Sidebar));
