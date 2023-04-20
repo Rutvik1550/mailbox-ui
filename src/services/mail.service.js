@@ -37,24 +37,30 @@ class MailServices extends BaseService {
   deleteEmail = async (mails) =>
     await this._callApi("POST", "/api/Login/DeleteEmail", undefined, {
       Userid: "abhinav.singh@dayibpl.com",
-      delEmailLists: mails
+      delEmailLists: mails,
     });
-  
+
   searchEmail = async (searchOptions) =>
     await this._callApi("POST", "/api/Login/FilterEmails", undefined, {
       Userid: "abhinav.singh@dayibpl.com",
-      ...searchOptions
+      ...searchOptions,
     });
 
   autoFillEmail = async (text) =>
     await this._callApi("POST", "/api/Login/GetAutoFillTo_CC", undefined, {
       Userid: "abhinav.singh@dayibpl.com",
-      SearchKeyword: text
+      SearchKeyword: text,
     });
 
   sendEmail = async (body) =>
     await this._callApi("POST", "/api/Login/SendEmail", undefined, {
       Userid: "abhinav.singh@dayibpl.com",
-      ...body
+      ...body,
+    });
+
+  getHtmlContent = async (filepath) =>
+    await this._callApi("POST", "/api/Login/ViewhtmlBody", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      Filepath: filepath,
     });
 }
