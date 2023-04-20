@@ -51,7 +51,9 @@ const ReadMail = ({ messageDetails, viewAsHtml, setViewAsHtml, htmlContent }) =>
       <div className="card card-primary card-outline" ref={mailRef}>
         <div className="card-header">
           <h3 className="card-title">Read Mail</h3>
-          <a className="ml-3 mb-2" href="#" onClick={handleClickToggle}>{viewAsHtml ? "View As Text" : "View As Html"}</a>
+          <a className="ml-3 mb-2" href="#" onClick={handleClickToggle}>
+            {viewAsHtml ? "View As Text" : "View As Html"}
+          </a>
         </div>
 
         <div className="card-body p-0">

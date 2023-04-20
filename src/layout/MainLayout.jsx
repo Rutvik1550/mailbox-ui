@@ -1,9 +1,10 @@
-import React from "react";
 import Header from "../components/mailbox/Header";
 import { Outlet } from "react-router-dom";
+import React from "react";
 import Sidebar from "../components/mailbox/Sidebar";
+import withAuthToken from "../hoc/withAuthToken";
 
-export const MainLayout = () => {
+const MainLayout = () => {
   return (
     <div className="content-wrapper">
       <Header />
@@ -22,3 +23,5 @@ export const MainLayout = () => {
     </div>
   );
 };
+
+export default withAuthToken(MainLayout);

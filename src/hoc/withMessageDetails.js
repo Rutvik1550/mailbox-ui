@@ -16,7 +16,7 @@ const withMessageDetails = (WrappedComponent) => {
     const { id } = useParams();
     const [searchParams] = useSearchParams();
     const [htmlContent, setHtmlContent] = useState("");
-    const [viewAsHtml, setViewAsHtml] = useState(false);
+    const [viewAsHtml, setViewAsHtml] = useState(true);
 
     const WrappedComponentWithLoading = withLoader(WrappedComponent, Loader);
 
@@ -28,10 +28,10 @@ const withMessageDetails = (WrappedComponent) => {
     }, [id, searchParams]);
 
     useEffect(() => {
-      if (viewAsHtml && messageDetails) {
+      if (messageDetails) {
         fetchHtmlContent(messageDetails.HtmlBodyPath);
       }
-    }, [viewAsHtml]);
+    }, [messageDetails]);
 
     const fetchMessageDetails = async (msgNum, folderName) => {
       try {
