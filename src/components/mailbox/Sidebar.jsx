@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import React, { useMemo, useState } from "react";
 import withMailFolderList from "../../hoc/withMailFolderList";
 import { useMailContext } from "../../context/mail";
@@ -20,13 +20,9 @@ const Routes = {
 
 const Sidebar = ({ mailFolderList }) => {
   const location = useLocation();
-  // const [isCollapse, setIsCollapse] = useState(false);
   const [isCollapseSubFolder, setIsCollapseSubFolder] = useState({});
   const mailContext = useMailContext();
-
-  // const handleCollapse = () => {
-  //   setIsCollapse(!isCollapse);
-  // };
+  const navigate = useNavigate()
 
   const handleCollapseSubFolder = (key) => {
     const t = isCollapseSubFolder[key];
@@ -56,13 +52,15 @@ const Sidebar = ({ mailFolderList }) => {
         }
       }
     });
-    
-    mailContext.setSelectedFolder(filterFolders.folders[0]);
+    if(!mailContext.selectedFolder) {
+      mailContext.setSelectedFolder(filterFolders.folders[0]);
+    }
     return filterFolders;
   }, [mailFolderList]);
 
   const handleFolderClick = (key) => {
     mailContext.setSelectedFolder(key);
+    navigate('/mailbox')
   };
 
   return (
@@ -123,34 +121,7 @@ const Sidebar = ({ mailFolderList }) => {
             )}
           </div>
         </div>
-        {/* /.card-body */}
       </div>
-      {/* /.card */}
-      {/* <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Labels</h3>
-
-          <div className="card-tools">
-            <button type="button" className="btn btn-tool" data-card-widget="collapse">
-              <i className="fas fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <div className="card-body p-0">
-          <ul className="nav nav-pills flex-column">
-            <li className="nav-item">
-              <a className="nav-link">
-                <i className="far fa-circle text-danger"></i> Important
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link">
-                <i className="far fa-circle text-warning"></i> Promotions
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div> */}
     </>
   );
 };

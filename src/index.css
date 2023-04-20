@@ -135,10 +135,45 @@ code {
   font-weight: 500 !important;
 }
 
+.form-group label.input-group-text {
+  min-width: 50px !important;
+}
+
 .form-group input.form-control {
   height: 2rem;
 }
 
 .react-multi-select {
   width: 100%;
+}
+
+.react-multi-select.hide-select-list div[id*=-listbox] {
+  display: none;
+}
+
+.files-container {
+  display: flex;
+  padding: 10px 0;
+}
+
+.files-container .file-wrapper {
+  background: #a9adad;
+  display: flex;
+  padding: 5px 10px;
+  border-radius: 4px;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.files-container .file-wrapper i {
+  margin: 3px 0px 0px 10px;
+  cursor: pointer;
+}
+
+.react-sorting-select {
+  position: absolute !important;
+  max-width: 150px;
+  width: 150px;
+  top: 0;
+  left: 100px;
 }

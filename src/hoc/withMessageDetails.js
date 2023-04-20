@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { useAuthContext } from "../context/auth";
 import { useMailService } from "../services/mail.service";
-import withLoader from "./withLoader";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
+import withLoader from "./withLoader";
 
 const withMessageDetails = (WrappedComponent) => {
   return function WithMessageDetailsComponent({ ...props }) {
@@ -15,6 +15,8 @@ const withMessageDetails = (WrappedComponent) => {
     const [messageDetails, setMessageDetails] = useState();
     const { id } = useParams();
     const [searchParams] = useSearchParams();
+    const [htmlContent, setHtmlContent] = useState("");
+    const [viewAsHtml, setViewAsHtml] = useState(false);
 
     const WrappedComponentWithLoading = withLoader(WrappedComponent, Loader);
 
@@ -24,6 +26,12 @@ const withMessageDetails = (WrappedComponent) => {
         fetchMessageDetails(id, folder);
       }
     }, [id, searchParams]);
+
+    useEffect(() => {
+      if (viewAsHtml && messageDetails) {
+        fetchHtmlContent(messageDetails.HtmlBodyPath);
+      }
+    }, [viewAsHtml]);
 
     const fetchMessageDetails = async (msgNum, folderName) => {
       try {
@@ -37,7 +45,27 @@ const withMessageDetails = (WrappedComponent) => {
       }
     };
 
-    return <WrappedComponentWithLoading loading={loading} messageDetails={messageDetails} />;
+    const fetchHtmlContent = async (filepath) => {
+      try {
+        setLoading(true);
+        const res = await mailService.getHtmlContent(filepath);
+        setHtmlContent(res.HtmlString);
+      } catch (err) {
+        console.log("Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <WrappedComponentWithLoading
+        loading={loading}
+        messageDetails={messageDetails}
+        viewAsHtml={viewAsHtml}
+        setViewAsHtml={setViewAsHtml}
+        htmlContent={htmlContent}
+      />
+    );
   };
 };
 
