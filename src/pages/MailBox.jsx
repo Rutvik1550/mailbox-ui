@@ -1,14 +1,45 @@
-import React, { useMemo, useState, useEffect } from "react";
-import withMails from "../hoc/withMails";
-import { useDebounce } from "../hooks/useDebounce";
-import { PAGE_LIMIT, DEBOUNCE_DELAY, Routes, emptyFilterOption, sortSelectOptions } from "../utils/constants";
-import { useNavigate } from "react-router";
-import { useMailContext } from "../context/mail";
+import { DEBOUNCE_DELAY, PAGE_LIMIT, Routes, emptyFilterOption, sortSelectOptions } from "../utils/constants";
+import React, { useEffect, useMemo, useState } from "react";
+
 import { SearchForm } from "../components/SearchForm";
-import makeAnimated from "react-select/animated";
 import Select from "react-select";
+import makeAnimated from "react-select/animated";
+import { useDebounce } from "../hooks/useDebounce";
+import { useMailContext } from "../context/mail";
+import { useNavigate } from "react-router";
+import withMails from "../hoc/withMails";
 
 const animatedComponents = makeAnimated();
+
+const customStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    background: "#fff",
+    borderColor: "#9e9e9e",
+    minHeight: "30px",
+    height: "30px",
+    boxShadow: state.isFocused ? null : null,
+    marginTop: "5px",
+  }),
+
+  valueContainer: (provided, state) => ({
+    ...provided,
+    height: "30px",
+    padding: "0 6px",
+  }),
+
+  input: (provided, state) => ({
+    ...provided,
+    margin: "0px",
+  }),
+  indicatorSeparator: (state) => ({
+    display: "none",
+  }),
+  indicatorsContainer: (provided, state) => ({
+    ...provided,
+    height: "30px",
+  }),
+};
 
 const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
   const [page, setPage] = useState(1);
@@ -129,10 +160,11 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
         <Select
           closeMenuOnSelect={true}
           components={animatedComponents}
-          defaultValue={sortSelectOptions.filter(option => option.value == sorting.type)}
+          defaultValue={sortSelectOptions.filter((option) => option.value == sorting.type)}
           onChange={handleSortingSelect}
           className={`react-sorting-select`}
           options={sortSelectOptions}
+          styles={customStyles}
         />
       </div>
       <div className="float-right d-flex align-items-center">
