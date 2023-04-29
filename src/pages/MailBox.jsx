@@ -24,6 +24,10 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
     type: "",
     asce: true,
   });
+  const [openMoveFolder, setOpenMoveFolder] = useState({
+    open: false,
+    Newfolderpath: "",
+  });
 
   useEffect(() => {
     if (allSelected) {
@@ -47,6 +51,7 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
     }
     return perPageFilterMails;
   }, [page, filteredMails, sorting]);
+  console.log(perPageMails,' perPageMails')
 
   const handlePageChange = (page) => {
     setPage(page);
@@ -81,6 +86,9 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
   const handleDeleteMails = async () => {
     try {
+      if (!selectedMails.length) {
+        return;
+      }
       await mailService.deleteEmail(selectedMails);
       setSelectedMails([]);
       fetchMails(selectedFolder);
@@ -111,6 +119,34 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
     }
   };
 
+  const openMoveMails = () => {
+    if (!selectedMails.length) return;
+    setOpenMoveFolder({
+      open: true,
+      Newfolderpath: ""
+    })
+  };
+
+  const handleMoveMails = async (folder) => {
+    try {
+      if(!folder) {
+        setOpenMoveFolder({
+          Newfolderpath: "",
+          open: false,
+        });
+        return;
+      }
+      const _mails = selectedMails.map(mail => ({ ...mail, OldMailFolderName: mail.MailFolderName, NewMailFolderName: folder }))
+
+      const res = await mailService.shiftMail(_mails)
+      if (!res.ErrorMessage) {
+        fetchMails(selectedFolder);
+      }
+    } catch (error) {
+      console.log("Error with shift mails: ", error)
+    }
+  }
+
   const MailBoxControls = () => (
     <div className="mailbox-controls d-flex position-relative justify-content-between">
       <div className="d-flex">
@@ -126,10 +162,13 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
         <button type="button" className="btn btn-default btn-sm" onClick={handleRefreshMails}>
           <i className="fas fa-sync-alt"></i>
         </button>
+        <button type="button" className="btn btn-default btn-sm" onClick={openMoveMails}>
+          Move Mails <i className="fas fa-share"></i>
+        </button>
         <Select
           closeMenuOnSelect={true}
           components={animatedComponents}
-          defaultValue={sortSelectOptions.filter(option => option.value == sorting.type)}
+          defaultValue={sortSelectOptions.filter((option) => option.value == sorting.type)}
           onChange={handleSortingSelect}
           className={`react-sorting-select`}
           options={sortSelectOptions}
@@ -166,6 +205,7 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
   );
 
   const handleMailCheckBox = (e, id, FolderName) => {
+    console.log(e.target?.checked, id, FolderName)
     if (e?.target?.checked) {
       setSelectedMails((prevVal) => [...prevVal, { Msgnum: id, MailFolderName: FolderName }]);
     } else {
@@ -269,6 +309,80 @@ const MailBox = ({ mails, fetchMails, selectedFolder, mailService }) => {
 
         <div className="card-footer p-0">
           <MailBoxControls />
+        </div>
+      </div>
+      {/* Move Folder select popup */}
+      <div
+        className={`modal fade ${openMoveFolder.open ? "show" : ""}`}
+        id="moveFolderModal"
+        tabIndex="-1"
+        aria-labelledby="moveFolderModalLabel"
+        aria-modal="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="moveFolderModalLabel">
+                Move Folder
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+                onClick={() =>
+                  setOpenMoveFolder({
+                    Newfolderpath: "",
+                    open: false,
+                  })
+                }
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <span>Move selected Mails?</span>
+              <div className="form-group">
+                <label htmlFor="moveMailsSelect">Move Mails To:</label>
+                <select
+                  className="form-control"
+                  id="moveMailsSelect"
+                  placeholder="Select New Folder"
+                  onChange={(e) => setOpenMoveFolder((prevVal) => ({ ...prevVal, Newfolderpath: e.target.value }))}
+                >
+                  <option value={""}>Select New Folder</option>
+                  {mailContext.mailFolderList &&
+                    mailContext.mailFolderList.map((mailFolder, index) => (
+                      <option key={`move-folder-option-${mailFolder.FolderName}-${index}`} value={mailFolder.FolderName}>
+                        {mailFolder.FolderName}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+                onClick={() =>
+                  setOpenMoveFolder({
+                    Newfolderpath: "",
+                    open: false,
+                  })
+                }
+              >
+                Cancle
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => handleMoveMails(openMoveFolder.Newfolderpath)}
+              >
+                Move
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>
