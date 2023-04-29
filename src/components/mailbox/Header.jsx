@@ -4,16 +4,16 @@ const Header = () => {
   return (
     <section className="content-header">
       <div className="container-fluid">
-        <div className="row mb-2">
+        <div className="row mb-0">
           <div className="col-sm-6">
-            <h1>Compose</h1>
+            <h1>Mailbox</h1>
           </div>
           <div className="col-sm-6">
             <ol className="breadcrumb float-sm-right">
               <li className="breadcrumb-item">
-                <a href="#">Home</a>
+                <span>Home</span>
               </li>
-              <li className="breadcrumb-item active">Compose</li>
+              <li className="breadcrumb-item active">Mailbox</li>
             </ol>
           </div>
         </div>

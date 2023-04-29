@@ -4,7 +4,7 @@ import Loader from "../components/Loader";
 import { useAuthContext } from "../context/auth";
 import { useMailService } from "../services/mail.service";
 import { useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import withLoader from "./withLoader";
 
 const withMessageDetails = (WrappedComponent) => {
@@ -17,18 +17,22 @@ const withMessageDetails = (WrappedComponent) => {
     const [searchParams] = useSearchParams();
     const [htmlContent, setHtmlContent] = useState("");
     const [viewAsHtml, setViewAsHtml] = useState(false);
+    const navigate = useNavigate()
 
     const WrappedComponentWithLoading = withLoader(WrappedComponent, Loader);
 
     useEffect(() => {
+      console.log('sdfsdf')
       const folder = searchParams.get("folder");
       if (id && folder) {
         fetchMessageDetails(id, folder);
+      } else {
+        navigate('/mailbox')
       }
     }, [id, searchParams]);
 
     useEffect(() => {
-      if (viewAsHtml && messageDetails) {
+      if (viewAsHtml && messageDetails && !htmlContent) {
         fetchHtmlContent(messageDetails.HtmlBodyPath);
       }
     }, [viewAsHtml]);

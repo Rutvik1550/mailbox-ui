@@ -63,4 +63,29 @@ class MailServices extends BaseService {
       Userid: "abhinav.singh@dayibpl.com",
       Filepath: filepath,
     });
+
+  createMailFolder = async (Folderpath) =>
+    await this._callApi("POST", "/api/Login/CreateMailFolder", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      Folderpath,
+    });
+
+  deleteMailFolder = async (Folderpath) =>
+    await this._callApi("POST", "/api/Login/DeleteMailFolder", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      Folderpath,
+    });
+
+  moveMailFolder = async (Oldfolderpath, Newfolderpath) =>
+    await this._callApi("POST", "/api/Login/MoveMailFolder", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      Oldfolderpath,
+      Newfolderpath
+    });
+
+  shiftMail = async (mails) =>
+    await this._callApi("POST", "/api/Login/ShiftEmail", undefined, {
+      Userid: "abhinav.singh@dayibpl.com",
+      shiftmaillist: mails
+    });
 }

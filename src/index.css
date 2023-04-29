@@ -12,6 +12,17 @@ code {
 
 .content-wrapper {
   margin-left: 0px !important;
+  min-height: 100vh !important;
+  height: fit-content !important;
+  padding-bottom: 10px;
+}
+
+.accordion {
+  cursor: default !important;
+}
+
+.card-header.no-after::after {
+  display: none !important;
 }
 
 .card {
@@ -41,6 +52,11 @@ code {
 
 .card-header .card-title.accordion__title {
   font-weight: 500;
+  font-size: 1rem !important;
+}
+
+.modal.fade.show {
+  display: block !important;
 }
 
 .accordion .card-header:hover {
@@ -175,5 +191,20 @@ code {
   max-width: 150px;
   width: 150px;
   top: 0;
-  left: 100px;
+  left: 210px;
+}
+
+.card-outline.card {
+  height: fit-content;
+  overflow: hidden;
+  margin-bottom: 0px !important;
+}
+
+.table-responsive.mailbox-messages {
+  min-height: calc(100vh - 194px);
+  overflow-y: scroll;
+}
+
+.content-header {
+  padding: 5px .5rem !important;
 }
